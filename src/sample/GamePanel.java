@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -21,7 +22,7 @@ import java.util.List;
 public class GamePanel {
     public static final float HEIGHT = 640;
     public static final float WIDHT = 800;
-    public final static float SCALE_TO_WORLD = 1f/HEIGHT;
+    public final static float SCALE_TO_WORLD = 0.005f;
 
     private Canvas canvas;
     private Group root;
@@ -30,27 +31,35 @@ public class GamePanel {
     //elements:
     private PhysicWorld physicWorld;
     private Ground ground;
-    private Block blockTest,blockTest2;
+    private Block blockTest;
+    List<Block> blocks = new ArrayList<>();
 
     public GamePanel(){
         physicWorld = new PhysicWorld();
         ground = new Ground(0,600,
                 WIDHT,40f,physicWorld.getWorld());
-        blockTest = new Block(100,300,
-                50f,50f,physicWorld.getWorld());
 
-        blockTest2 = new Block(120,10,
-                50f,50f,physicWorld.getWorld());
+        blockTest =new Block(100,100,
+                40f,40f,physicWorld.getWorld());
 
         canvas = new Canvas(WIDHT,HEIGHT);
         root = new Group();
         graphicsContext2D = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
 
+        canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                float x = (float) event.getX() ;
+                float y = (float) event.getY();
+                blocks.add(new Block(x,y,
+                        40f,40f,physicWorld.getWorld()));
+                System.out.println("Mouse click x= " + x + " y = " + y);
+            }
+        });
     }
     public void update(){
         physicWorld.worldUpdate();
-        blockTest.writePosition();
     }
     public void draw(String fps){
 
@@ -59,8 +68,11 @@ public class GamePanel {
         graphicsContext2D.setFont(Font.font(28));
         graphicsContext2D.fillText(fps,WIDHT -200, 40);
         ground.updateGraphic(graphicsContext2D);
+        for(int i=0; i< blocks.size();i++)
+        {
+            blocks.get(i).updateGraphic(graphicsContext2D);
+        }
         blockTest.updateGraphic(graphicsContext2D);
-        blockTest2.updateGraphic(graphicsContext2D);
 
     }
 

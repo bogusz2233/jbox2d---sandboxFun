@@ -33,6 +33,11 @@ public class Block {
     //Graphics parameters
     Color color = Color.RED;
 
+    // math parameters
+    double xPos;
+    double yPos;
+    double[] polygonY,polygonX;
+
     public Block(float xPosition, float yPosition,
                  float width, float height, World world) {
         this.xPosition = xPosition;
@@ -73,25 +78,45 @@ public class Block {
         fixtureDef.density = 1;
         fixtureDef.friction = 0.3f;
         body.createFixture(fixtureDef);
+        System.out.println("body: x= " + body.getPosition().x + " y= " + body.getPosition().y);
+        System.out.println("zaleznosc: x= " + xPosition /body.getPosition().x + " y= " + yPosition/body.getPosition().y);
 
     }
 
     public void updateGraphic(GraphicsContext graphicsContext){
-        double xPos = body.getPosition().x;
-        double yPos = body.getPosition().y;
-        double[] polygonX ={(xPos +shape.getVertex(0).x)/GamePanel.SCALE_TO_WORLD
-        ,(xPos + shape.getVertex(1).x)/GamePanel.SCALE_TO_WORLD
-        ,(xPos +shape.getVertex(2).x)/GamePanel.SCALE_TO_WORLD
-        ,(xPos +shape.getVertex(3).x)/GamePanel.SCALE_TO_WORLD};
+        xPos = body.getPosition().x;
+        yPos = body.getPosition().y;
+        polygonX =new double[]{(shape.getVertex(0).x)
+        ,( shape.getVertex(1).x)
+        ,( shape.getVertex(2).x)
+        ,( shape.getVertex(3).x)};
 
-        double[] polygonY ={(yPos + shape.getVertex(0).y)/GamePanel.SCALE_TO_WORLD
-                ,(yPos +shape.getVertex(1).y)/GamePanel.SCALE_TO_WORLD
-                ,(yPos +shape.getVertex(2).y)/GamePanel.SCALE_TO_WORLD
-                ,(yPos +shape.getVertex(3).y)/GamePanel.SCALE_TO_WORLD};
+        polygonY = new double[]{(shape.getVertex(0).y)
+                ,(shape.getVertex(1).y)
+                ,(shape.getVertex(2).y)
+                ,(shape.getVertex(3).y)};
 
+        rotate(0);
+        rotate(1);
+        rotate(2);
+        rotate(3);
         graphicsContext.setFill(color);
         graphicsContext.fillPolygon(polygonX,polygonY,4);
 
+    }
+
+    private void rotate(int i){
+        double dx = polygonX[i];
+        double dy = polygonY[i];
+        double xPrim;
+        double yPrim;
+        double radian = body.getAngle();
+
+        xPrim = dx * Math.cos(radian) - dy * Math.sin(radian);
+        yPrim = dx * Math.sin(radian) + dy * Math.cos(radian);
+
+        polygonX[i] = (xPrim +xPos)/GamePanel.SCALE_TO_WORLD;
+        polygonY[i] = (yPrim +yPos)/GamePanel.SCALE_TO_WORLD;
     }
 
     public void writePosition(){

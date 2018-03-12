@@ -1,26 +1,22 @@
 package sample.elements;
 
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import sample.GamePanel;
-import sample.Main;
-
-import java.awt.*;
-
-import static sample.GamePanel.*;
 
 /**
- * Created by bogusz on 10.03.18.
+ * Created by bogusz on 12.03.18.
  */
-public class Block {
+public class StaticBarier {
 
     //Dimisions
     private float xPosition;
     private float yPosition;
-    private static float width = 40f;
+    private static float width = 200f;
     private static float height = 40f;
 
     //Physics Parameters
@@ -31,36 +27,26 @@ public class Block {
     private FixtureDef fixtureDef;
 
     //Graphics parameters
-    private static Color color = Color.RED;
+    private static Color color = Color.LAWNGREEN;
 
     // math parameters
     double xPos;
     double yPos;
     double[] polygonY,polygonX;
 
-    public Block(float xPosition, float yPosition,
-                 float width, float height, World world) {
-        this.xPosition = xPosition;
-        this.yPosition = yPosition;
-        this.width = width;
-        this.height =height;
-        this.world = world;
-
-        physicCreate();
-    }
-
-    public Block (float xPosition, float yPosition,World world){
+    public StaticBarier(float xPosition, float yPosition, World world) {
         this.xPosition = xPosition - width/2;
         this.yPosition = yPosition - height/2;
         this.world = world;
+
         physicCreate();
     }
 
     private void physicCreate(){
         bodyDef = new BodyDef();
-        bodyDef.type = BodyType.DYNAMIC;
+        bodyDef.type = BodyType.STATIC;
         bodyDef.position.set((xPosition + width/2) / GamePanel.SCALE_TO_JAVAFX,
-                            (yPosition + height/2) / GamePanel.SCALE_TO_JAVAFX);
+                (yPosition + height/2) / GamePanel.SCALE_TO_JAVAFX);
 
         body = world.createBody(bodyDef);
 
@@ -83,7 +69,7 @@ public class Block {
         fixtureDef.shape = shape;
         fixtureDef.density = 1;
         fixtureDef.friction = 0.3f;
-        fixtureDef.restitution = 0.3f;
+        fixtureDef.restitution = 0.1f;
         body.createFixture(fixtureDef);
     }
 
@@ -91,9 +77,9 @@ public class Block {
         xPos = body.getPosition().x;
         yPos = body.getPosition().y;
         polygonX =new double[]{(shape.getVertex(0).x)
-        ,( shape.getVertex(1).x)
-        ,( shape.getVertex(2).x)
-        ,( shape.getVertex(3).x)};
+                ,( shape.getVertex(1).x)
+                ,( shape.getVertex(2).x)
+                ,( shape.getVertex(3).x)};
 
         polygonY = new double[]{(shape.getVertex(0).y)
                 ,(shape.getVertex(1).y)
@@ -123,15 +109,6 @@ public class Block {
         polygonY[i] = (yPrim +yPos) * GamePanel.SCALE_TO_JAVAFX;
     }
 
-    public void writePosition(){
-        System.out.println("Rotate = " + body.getAngle());
-    }
-    public void writePostionConvertedFromWorld(){
-        double x = body.getPosition().x / GamePanel.SCALE_TO_WORLD;
-        double y = body.getPosition().y / GamePanel.SCALE_TO_WORLD;
-        System.out.println("Pozycja w świeci x= " + y + " y= " + y );
-    }
-
     public void deletItself(){
         world.destroyBody(body);
     }
@@ -139,4 +116,5 @@ public class Block {
         context.setFill(color);
         context.fillRect(xCenter-(width/2),yCenter-(height/2), width, height);
     }
+
 }

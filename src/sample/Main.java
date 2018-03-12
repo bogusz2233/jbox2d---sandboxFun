@@ -20,6 +20,7 @@ public class Main extends Application {
 
         primaryStage.setTitle("Box2D - TEST");
         primaryStage.setScene(panel.getScene());
+        primaryStage.setResizable(false);
         primaryStage.show();
         gameLoopInit();
 

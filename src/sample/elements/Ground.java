@@ -2,7 +2,6 @@ package sample.elements;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
@@ -17,7 +16,7 @@ import static sample.GamePanel.*;
  * Created by bogusz on 10.03.18.
  */
 public class Ground {
-    //Dimisions
+    //dimension
     private float xPosition;
     private float yPosition;
     private float width;

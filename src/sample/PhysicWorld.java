@@ -10,9 +10,8 @@ public class PhysicWorld {
 
     private Vec2 gravity;
     private World world;
-
     public PhysicWorld() {
-        gravity = new Vec2(0,10);
+        gravity = new Vec2(0,50);
         world = new World(gravity, false);
     }
 

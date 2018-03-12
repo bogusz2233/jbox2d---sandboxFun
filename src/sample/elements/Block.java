@@ -47,27 +47,36 @@ public class Block {
         this.world = world;
 
         physicCreate();
+    }
 
+    public Block (float xPosition, float yPosition,World world){
+        this.xPosition = xPosition;
+        this.yPosition = yPosition;
+        this.world = world;
+
+        width = 40f;
+        height =40f;
+        physicCreate();
     }
 
     private void physicCreate(){
         bodyDef = new BodyDef();
         bodyDef.type = BodyType.DYNAMIC;
-        bodyDef.position.set((xPosition + width/2) * GamePanel.SCALE_TO_WORLD,
-                            (yPosition + height/2) * GamePanel.SCALE_TO_WORLD);
+        bodyDef.position.set((xPosition + width/2) / GamePanel.SCALE_TO_JAVAFX,
+                            (yPosition + height/2) / GamePanel.SCALE_TO_JAVAFX);
 
         body = world.createBody(bodyDef);
 
         shape = new PolygonShape();
 
-        Vec2 B1 = new Vec2(xPosition * GamePanel.SCALE_TO_WORLD,
-                yPosition* GamePanel.SCALE_TO_WORLD);
-        Vec2 B2 = new Vec2((xPosition +width)* GamePanel.SCALE_TO_WORLD,
-                yPosition* GamePanel.SCALE_TO_WORLD);
-        Vec2 B3 = new Vec2((xPosition +width)* GamePanel.SCALE_TO_WORLD,
-                (yPosition + height)* GamePanel.SCALE_TO_WORLD);
-        Vec2 B4 = new Vec2((xPosition)* GamePanel.SCALE_TO_WORLD,
-                (yPosition + height)* GamePanel.SCALE_TO_WORLD);
+        Vec2 B1 = new Vec2( ((float)-width / 2)/ GamePanel.SCALE_TO_JAVAFX,
+                -height/2/ GamePanel.SCALE_TO_JAVAFX);
+        Vec2 B2 = new Vec2((width/2)/ GamePanel.SCALE_TO_JAVAFX,
+                -height/2/ GamePanel.SCALE_TO_JAVAFX);
+        Vec2 B3 = new Vec2((width/2)/ GamePanel.SCALE_TO_JAVAFX,
+                height/2/ GamePanel.SCALE_TO_JAVAFX);
+        Vec2 B4 = new Vec2((-width/2)/ GamePanel.SCALE_TO_JAVAFX,
+                (height/2)/ GamePanel.SCALE_TO_JAVAFX);
 
         Vec2[] vec2 ={B1,B2,B3,B4};
 
@@ -78,9 +87,6 @@ public class Block {
         fixtureDef.density = 1;
         fixtureDef.friction = 0.3f;
         body.createFixture(fixtureDef);
-        System.out.println("body: x= " + body.getPosition().x + " y= " + body.getPosition().y);
-        System.out.println("zaleznosc: x= " + xPosition /body.getPosition().x + " y= " + yPosition/body.getPosition().y);
-
     }
 
     public void updateGraphic(GraphicsContext graphicsContext){
@@ -115,11 +121,16 @@ public class Block {
         xPrim = dx * Math.cos(radian) - dy * Math.sin(radian);
         yPrim = dx * Math.sin(radian) + dy * Math.cos(radian);
 
-        polygonX[i] = (xPrim +xPos)/GamePanel.SCALE_TO_WORLD;
-        polygonY[i] = (yPrim +yPos)/GamePanel.SCALE_TO_WORLD;
+        polygonX[i] = (xPrim +xPos) * GamePanel.SCALE_TO_JAVAFX;
+        polygonY[i] = (yPrim +yPos) * GamePanel.SCALE_TO_JAVAFX;
     }
 
     public void writePosition(){
         System.out.println("Rotate = " + body.getAngle());
+    }
+    public void writePostionConvertedFromWorld(){
+        double x = body.getPosition().x / GamePanel.SCALE_TO_WORLD;
+        double y = body.getPosition().y / GamePanel.SCALE_TO_WORLD;
+        System.out.println("Pozycja w świeci x= " + y + " y= " + y );
     }
 }

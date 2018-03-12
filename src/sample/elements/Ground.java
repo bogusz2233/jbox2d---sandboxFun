@@ -42,22 +42,23 @@ public class Ground {
         physicCreate();
     }
 
+
     public void updateGraphic(GraphicsContext graphicsContext){
-        xPosition = (body.getPosition().x / GamePanel.SCALE_TO_WORLD) - width/2f;
-        yPosition = (body.getPosition().y/ GamePanel.SCALE_TO_WORLD) -height/2f;
+        xPosition = body.getPosition().x * GamePanel.SCALE_TO_JAVAFX - width/2f;
+        yPosition = body.getPosition().y *GamePanel.SCALE_TO_JAVAFX -height/2f;
         graphicsContext.setFill(color);
         graphicsContext.fillRect(xPosition, yPosition, width,height);
     }
 
     private void physicCreate(){
         bodyDef = new BodyDef();
-        bodyDef.position.set((xPosition + width/2)* GamePanel.SCALE_TO_WORLD ,
-                             (yPosition + height/2) *GamePanel.SCALE_TO_WORLD);
+        bodyDef.position.set((xPosition + width/2)/ GamePanel.SCALE_TO_JAVAFX ,
+                             (yPosition + height/2)/ GamePanel.SCALE_TO_JAVAFX);
 
         body = world.createBody(bodyDef);
 
         shape = new PolygonShape();
-        shape.setAsBox(width/2 *GamePanel.SCALE_TO_WORLD ,height/2 *GamePanel.SCALE_TO_WORLD );
+        shape.setAsBox(width/2 /GamePanel.SCALE_TO_JAVAFX ,height/2 /GamePanel.SCALE_TO_JAVAFX );
 
         body.createFixture(shape,0);
     }

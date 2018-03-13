@@ -43,8 +43,8 @@ public class Ground {
 
 
     public void updateGraphic(GraphicsContext graphicsContext){
-        xPosition = body.getPosition().x * GamePanel.SCALE_TO_JAVAFX - width/2f;
-        yPosition = body.getPosition().y *GamePanel.SCALE_TO_JAVAFX -height/2f;
+        xPosition = body.getPosition().x * GamePanel.SCALE_TO_JAVAFX - width/2f + (float) GamePanel.getxCameraPostion();
+        yPosition = body.getPosition().y *GamePanel.SCALE_TO_JAVAFX -height/2f + (float) GamePanel.getyCameraPostion();
         graphicsContext.setFill(color);
         graphicsContext.fillRect(xPosition, yPosition, width,height);
     }

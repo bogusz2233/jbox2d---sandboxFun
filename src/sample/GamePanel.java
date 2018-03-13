@@ -1,19 +1,19 @@
 package sample;
 
-import javafx.event.Event;
+import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Slider;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import sample.UserInterface.InterfaceMainContainer;
+import sample.elements.ElementBase;
 import sample.elements.Ground;
 import sample.elements.Block;
 import sample.elements.StaticBarier;
@@ -27,9 +27,8 @@ import java.util.List;
  */
 public class GamePanel {
     private static boolean resetWorldFlag = false;
-    public static final float HEIGHT = 720;
+    public static final float HEIGHT = 700;
     public static final float WIDHT = 1024;
-    public final static float SCALE_TO_WORLD = 0.005f;
     public final static float SCALE_TO_JAVAFX = 20.0f;
 
 
@@ -38,6 +37,9 @@ public class GamePanel {
     //place to rendering
     private Canvas canvas;
     private GraphicsContext graphicsContext2D;
+    private static double xCameraPostion=0;
+    private static double yCameraPostion=0;
+
     //GUI
     private InterfaceMainContainer userInter;
 
@@ -45,12 +47,16 @@ public class GamePanel {
     private PhysicWorld physicWorld;
     private Ground ground;
     private Block blockTest;
-    List<Block> blocks = new ArrayList<>();
-    List<StaticBarier>  staticBariers= new ArrayList<>();
+    List<ElementBase> elementsOnBoard = new ArrayList<>();
 
     // Mouse position:
     private double xMousePos;
     private double yMousePos;
+
+    private double xMouseStartMove;
+    private double yMouseStartMove;
+
+    private AnimationTimer swipeCameraAnimation;
 
     public GamePanel(){
         physicWorld = new PhysicWorld();
@@ -69,15 +75,18 @@ public class GamePanel {
         canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                float x = (float) event.getSceneX();
-                float y = (float) event.getSceneY();
-                switch (InterfaceMainContainer.getSelectedElemnt()) {
-                    case BLOCK:
-                        blocks.add(new Block(x, y, physicWorld.getWorld()));
-                        break;
-                    case GROUND:
-                        staticBariers.add(new StaticBarier(x,y,physicWorld.getWorld()));
+                if(event.getButton() == MouseButton.PRIMARY) {
 
+                    float x = (float) (event.getSceneX() - xCameraPostion);
+                    float y = (float) (event.getSceneY() - yCameraPostion);
+                    switch (InterfaceMainContainer.getSelectedElemnt()) {
+                        case BLOCK:
+                            elementsOnBoard.add(new Block(x, y, physicWorld.getWorld()));
+                            break;
+                        case GROUND:
+                            elementsOnBoard.add(new StaticBarier(x, y, physicWorld.getWorld()));
+
+                    }
                 }
             }
         });
@@ -89,20 +98,52 @@ public class GamePanel {
                 yMousePos = event.getY();
             }
         });
+
+
+
+        canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(event.getButton() == MouseButton.MIDDLE) {
+                    xMouseStartMove = event.getX();
+                    yMouseStartMove = event.getY();
+                }
+            }
+        });
+        canvas.addEventFilter(MouseDragEvent.MOUSE_DRAGGED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(event.getButton() == MouseButton.MIDDLE) {
+                    xCameraPostion -= xMouseStartMove - event.getX();
+                    yCameraPostion -= yMouseStartMove - event.getY();
+
+                    xMouseStartMove =event.getX();
+                    yMouseStartMove =event.getY();
+
+
+                    double xBlock = 1500;
+                    double yBlock = 200;
+                    //zablokowanie przewijania:
+                    if(xCameraPostion > xBlock) xCameraPostion =xBlock;
+                    else if(xCameraPostion < - xBlock) xCameraPostion = -xBlock;
+
+                    if(yCameraPostion >  yBlock) yCameraPostion = yBlock;
+                    else if(yCameraPostion <  -yBlock) yCameraPostion = -yBlock;
+                }
+            }
+        });
+
     }
     public void update(){
         physicWorld.worldUpdate();
         if(resetWorldFlag){
-            for(int i=0; i< blocks.size();i++)
+            for(int i=0; i< elementsOnBoard.size();i++)
             {
-                blocks.get(i).deletItself();
-            }
-            for(int i=0; i< staticBariers.size();i++){
-                staticBariers.get(i).deletItself();
+                elementsOnBoard.get(i).deleteItself();
             }
 
-            blocks.clear();
-            staticBariers.clear();
+            elementsOnBoard.clear();
+
             resetWorldFlag = false;
         }
     }
@@ -114,12 +155,9 @@ public class GamePanel {
         graphicsContext2D.fillText(fps,WIDHT -200, 150);
         ground.updateGraphic(graphicsContext2D);
         blockTest.updateGraphic(graphicsContext2D);
-        for(int i=0; i< blocks.size();i++)
+        for(int i=0; i< elementsOnBoard.size();i++)
         {
-            blocks.get(i).updateGraphic(graphicsContext2D);
-        }
-        for (int i=0; i<staticBariers.size(); i++){
-            staticBariers.get(i).updateGraphic(graphicsContext2D);
+            elementsOnBoard.get(i).updateGraphic(graphicsContext2D);
         }
         blockTest.updateGraphic(graphicsContext2D);
         userInter.drawSampleonScreen(graphicsContext2D,xMousePos,yMousePos);
@@ -133,6 +171,14 @@ public class GamePanel {
     public Scene getScene()
     {
         return new Scene(root);
+    }
+
+    public static double getxCameraPostion() {
+        return xCameraPostion;
+    }
+
+    public static double getyCameraPostion() {
+        return yCameraPostion;
     }
 
 }

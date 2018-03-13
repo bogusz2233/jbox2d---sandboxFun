@@ -8,6 +8,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -62,7 +63,7 @@ public class InterfaceMainContainer {
         //slider :
         elementsSelectorSlide = new Slider();
         elementsSelectorSlide.setMax(DrawingElements.values().length);
-        elementsSelectorSlide.setMin(0);
+        elementsSelectorSlide.setMin(1);
         elementsSelectorSlide.setValueChanging(true);
         elementsSelectorSlide.setMajorTickUnit(1);
         elementsSelectorSlide.setMinorTickCount(0);
@@ -87,10 +88,9 @@ public class InterfaceMainContainer {
                 changeElement();
             }
         });
-
-        elementsSelectorSlide.setOnDragDone(new EventHandler<DragEvent>() {
+        elementsSelectorSlide.setOnMouseReleased(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(DragEvent dragEvent) {
+            public void handle(MouseEvent event) {
                 changeElement();
             }
         });

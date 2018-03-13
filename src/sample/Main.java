@@ -31,7 +31,7 @@ public class Main extends Application {
             int frameCount = 0;
             int fps =0;
             long frameUpdateTime=0;
-            long delayTimeNano =(long)(1.0/60.0 * 1_000_000_000);  // 20M  == 100 fps
+            long delayTimeNano =16_000_000L;//(1L/70L * 1_000_000_000L);  // 20M  == 100 fps
             long timeFromLastUpdate =0;
             @Override
             public void handle(long currentNanoTime) {

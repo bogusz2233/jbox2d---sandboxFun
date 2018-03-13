@@ -15,28 +15,15 @@ import static sample.GamePanel.*;
 /**
  * Created by bogusz on 10.03.18.
  */
-public class Block {
+public class Block extends ElementBase {
 
-    //Dimisions
-    private float xPosition;
-    private float yPosition;
+    //Dimisions:
     private static float width = 40f;
     private static float height = 40f;
-
-    //Physics Parameters
-    private World world;
-    private BodyDef bodyDef;
-    private Body body;
-    private PolygonShape shape;
-    private FixtureDef fixtureDef;
 
     //Graphics parameters
     private static Color color = Color.RED;
 
-    // math parameters
-    double xPos;
-    double yPos;
-    double[] polygonY,polygonX;
 
     public Block(float xPosition, float yPosition,
                  float width, float height, World world) {
@@ -45,7 +32,6 @@ public class Block {
         this.width = width;
         this.height =height;
         this.world = world;
-
         physicCreate();
     }
 
@@ -56,7 +42,8 @@ public class Block {
         physicCreate();
     }
 
-    private void physicCreate(){
+    @Override
+    protected  void physicCreate(){
         bodyDef = new BodyDef();
         bodyDef.type = BodyType.DYNAMIC;
         bodyDef.position.set((xPosition + width/2) / GamePanel.SCALE_TO_JAVAFX,
@@ -87,6 +74,7 @@ public class Block {
         body.createFixture(fixtureDef);
     }
 
+    @Override
     public void updateGraphic(GraphicsContext graphicsContext){
         xPos = body.getPosition().x;
         yPos = body.getPosition().y;
@@ -100,41 +88,19 @@ public class Block {
                 ,(shape.getVertex(2).y)
                 ,(shape.getVertex(3).y)};
 
-        rotate(0);
-        rotate(1);
-        rotate(2);
-        rotate(3);
+        rotate();
         graphicsContext.setFill(color);
         graphicsContext.fillPolygon(polygonX,polygonY,4);
 
     }
 
-    private void rotate(int i){
-        double dx = polygonX[i];
-        double dy = polygonY[i];
-        double xPrim;
-        double yPrim;
-        double radian = body.getAngle();
-
-        xPrim = dx * Math.cos(radian) - dy * Math.sin(radian);
-        yPrim = dx * Math.sin(radian) + dy * Math.cos(radian);
-
-        polygonX[i] = (xPrim +xPos) * GamePanel.SCALE_TO_JAVAFX;
-        polygonY[i] = (yPrim +yPos) * GamePanel.SCALE_TO_JAVAFX;
-    }
-
-    public void writePosition(){
-        System.out.println("Rotate = " + body.getAngle());
-    }
     public void writePostionConvertedFromWorld(){
-        double x = body.getPosition().x / GamePanel.SCALE_TO_WORLD;
-        double y = body.getPosition().y / GamePanel.SCALE_TO_WORLD;
+        double x = body.getPosition().x * GamePanel.SCALE_TO_JAVAFX;
+        double y = body.getPosition().y * GamePanel.SCALE_TO_JAVAFX;
         System.out.println("Pozycja w świeci x= " + y + " y= " + y );
     }
 
-    public void deletItself(){
-        world.destroyBody(body);
-    }
+
     public static void drawSampleElement(GraphicsContext context,double xCenter,double yCenter){
         context.setFill(color);
         context.fillRect(xCenter-(width/2),yCenter-(height/2), width, height);

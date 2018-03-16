@@ -6,7 +6,7 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
-import sample.GamePanel;
+import sample.WorldCreator;
 
 /**
  * Created by bogusz on 12.03.18.
@@ -25,9 +25,9 @@ public abstract class ElementBase {
     protected FixtureDef fixtureDef;
 
     // math parameters
-    double xPos;
-    double yPos;
-    double[] polygonY,polygonX;
+    protected double xPos;
+    protected  double yPos;
+    protected double[] polygonY,polygonX;
 
     protected abstract void physicCreate();
     public abstract void updateGraphic(GraphicsContext graphicsContext);
@@ -49,8 +49,8 @@ public abstract class ElementBase {
         xPrim = dx * Math.cos(radian) - dy * Math.sin(radian);
         yPrim = dx * Math.sin(radian) + dy * Math.cos(radian);
 
-        polygonX[i] = (xPrim +xPos) * GamePanel.SCALE_TO_JAVAFX + GamePanel.getxCameraPostion();
-        polygonY[i] = (yPrim +yPos) * GamePanel.SCALE_TO_JAVAFX + GamePanel.getyCameraPostion();
+        polygonX[i] = (xPrim +xPos) * WorldCreator.SCALE_TO_JAVAFX + WorldCreator.getxCameraPostion();
+        polygonY[i] = (yPrim +yPos) * WorldCreator.SCALE_TO_JAVAFX + WorldCreator.getyCameraPostion();
     }
 
     protected void rotate() {

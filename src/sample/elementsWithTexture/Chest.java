@@ -1,38 +1,42 @@
-package sample.elements;
-
+package sample.elementsWithTexture;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import javafx.scene.image.*;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.*;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.World;
 import sample.WorldCreator;
+import sample.elements.ElementBase;
+
 
 /**
- * Created by bogusz on 12.03.18.
+ * Created by bogusz on 13.03.18.
  */
-public class StaticBarier extends ElementBase {
+public class Chest extends ElementBase {
 
+    private  Image textureImage;
     //Dimisions:
-    private static float width = 200f;
-    private static float height = 40f;
+    protected static float width = 40f;
+    protected static float height = 40f;
 
-    //Graphics parameters
-    private static Color color = Color.LAWNGREEN;
-
-
-    public StaticBarier(float xPosition, float yPosition, World world) {
+    public Chest(float xPosition, float yPosition, World world) {
         this.xPosition = xPosition - width/2;
         this.yPosition = yPosition - height/2;
         this.world = world;
+
+        textureImage = new Image("img/chest2.png",width,height,true,false);
+
 
         physicCreate();
     }
 
     @Override
-    protected  void physicCreate(){
+    protected void physicCreate() {
         bodyDef = new BodyDef();
-        bodyDef.type = BodyType.STATIC;
+        bodyDef.type = BodyType.DYNAMIC;
         bodyDef.position.set((xPosition + width/2) / WorldCreator.SCALE_TO_JAVAFX,
                 (yPosition + height/2) / WorldCreator.SCALE_TO_JAVAFX);
 
@@ -55,40 +59,32 @@ public class StaticBarier extends ElementBase {
 
         fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 1;
+        fixtureDef.density = 2;
         fixtureDef.friction = 0.3f;
-        fixtureDef.restitution = 0.1f;
+        fixtureDef.restitution = 0.4f;
         body.createFixture(fixtureDef);
     }
 
     @Override
     public void updateGraphic(GraphicsContext graphicsContext){
-        xPos = body.getPosition().x;
-        yPos = body.getPosition().y;
-        polygonX =new double[]{(shape.getVertex(0).x)
-                ,( shape.getVertex(1).x)
-                ,( shape.getVertex(2).x)
-                ,( shape.getVertex(3).x)};
 
-        polygonY = new double[]{(shape.getVertex(0).y)
-                ,(shape.getVertex(1).y)
-                ,(shape.getVertex(2).y)
-                ,(shape.getVertex(3).y)};
 
-        rotate();
-        graphicsContext.setFill(color);
-        graphicsContext.fillPolygon(polygonX,polygonY,4);
+        xPos = body.getPosition().x * WorldCreator.SCALE_TO_JAVAFX;
+        yPos = body.getPosition().y * WorldCreator.SCALE_TO_JAVAFX;
 
-    }
+        xPos += WorldCreator.getxCameraPostion();
+        yPos += WorldCreator.getyCameraPostion();
+        graphicsContext.save();
+        graphicsContext.translate(xPos,yPos);
 
-    @Override
-    public void deleteItself(){
-        world.destroyBody(body);
+        graphicsContext.rotate( Math.toDegrees(body.getAngle()));
+        graphicsContext.drawImage(textureImage,
+                -width/2,-height/2,width,height);
+        graphicsContext.restore();
     }
 
     public static void drawSampleElement(GraphicsContext context,double xCenter,double yCenter){
-        context.setFill(color);
-        context.fillRect(xCenter-(width/2),yCenter-(height/2), width, height);
+        Image sampleImage = new Image("img/chest2.png",width,height,true,false);
+        context.drawImage(sampleImage, xCenter-(width/2),yCenter-(height/2));
     }
-
 }

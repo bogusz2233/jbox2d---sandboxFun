@@ -7,15 +7,15 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import sample.GamePanel;
+import sample.WorldCreator;
+import sample.elementsWithTexture.Ground;
 import sample.elements.Block;
 import sample.elements.StaticBarier;
+import sample.elementsWithTexture.Chest;
 
 
 /**
@@ -37,6 +37,11 @@ public class InterfaceMainContainer {
     public enum DrawingElements{
         BLOCK,
         GROUND,
+        CHEST,
+        BLOCK_GROUND_1,
+        BLOCK_GROUND_2,
+        BLOCK_GROUND_3,
+        BLOCK_GROUND_4,
     }
     private static DrawingElements selectedElemnt;      // visible to all
     public InterfaceMainContainer(){
@@ -48,7 +53,7 @@ public class InterfaceMainContainer {
 
     private void initContainer(){
         container = new HBox();
-        container.setPrefWidth(GamePanel.WIDHT);
+        container.setPrefWidth(WorldCreator.WIDHT);
         container.setPrefHeight(100);
         container.setStyle("-fx-background-color: #c1ffc3;");
         container.setAlignment(Pos.CENTER_LEFT);
@@ -102,7 +107,7 @@ public class InterfaceMainContainer {
         resetButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                GamePanel.resetWorld();
+                WorldCreator.resetWorld();
             }
         });
         container.getChildren().add(resetButton);
@@ -116,6 +121,21 @@ public class InterfaceMainContainer {
                 break;
             case GROUND:
                 StaticBarier.drawSampleElement(elementDrawContex,elemtsCanvans.getWidth()/2,elemtsCanvans.getHeight()/2);
+                break;
+            case CHEST:
+                Chest.drawSampleElement(elementDrawContex,elemtsCanvans.getWidth()/2,elemtsCanvans.getHeight()/2);
+                break;
+            case BLOCK_GROUND_1:
+                Ground.drawSampleElement(elementDrawContex,elemtsCanvans.getWidth()/2,elemtsCanvans.getHeight()/2,1);
+                break;
+            case BLOCK_GROUND_2:
+                Ground.drawSampleElement(elementDrawContex,elemtsCanvans.getWidth()/2,elemtsCanvans.getHeight()/2,2);
+                break;
+            case BLOCK_GROUND_3:
+                Ground.drawSampleElement(elementDrawContex,elemtsCanvans.getWidth()/2,elemtsCanvans.getHeight()/2,3);
+                break;
+            case BLOCK_GROUND_4:
+                Ground.drawSampleElement(elementDrawContex,elemtsCanvans.getWidth()/2,elemtsCanvans.getHeight()/2,4);
                 break;
             default:
                 elementDrawContex.setFill(Color.BLACK);
@@ -134,6 +154,21 @@ public class InterfaceMainContainer {
             case 2:
                 selectedElemnt = DrawingElements.GROUND;
                 break;
+            case 3:
+                selectedElemnt = DrawingElements.CHEST;
+                break;
+            case 4:
+                selectedElemnt = DrawingElements.BLOCK_GROUND_1;
+                break;
+            case 5:
+                selectedElemnt = DrawingElements.BLOCK_GROUND_2;
+                break;
+            case 6:
+                selectedElemnt = DrawingElements.BLOCK_GROUND_3;
+                break;
+            case 7:
+                selectedElemnt = DrawingElements.BLOCK_GROUND_4;
+                break;
         }
         drawSampleElements();
     }
@@ -149,6 +184,21 @@ public class InterfaceMainContainer {
                 break;
             case GROUND:
                 StaticBarier.drawSampleElement(context,x,y);
+                break;
+            case CHEST:
+                Chest.drawSampleElement(context,x,y);
+                break;
+            case BLOCK_GROUND_1:
+                Ground.drawSampleElement(context,x,y,1);
+                break;
+            case BLOCK_GROUND_2:
+                Ground.drawSampleElement(context,x,y,2);
+                break;
+            case BLOCK_GROUND_3:
+                Ground.drawSampleElement(context,x,y,3);
+                break;
+            case BLOCK_GROUND_4:
+                Ground.drawSampleElement(context,x,y,4);
                 break;
             default:
                 break;

@@ -5,10 +5,12 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.text.NumberFormat;
+
 
 public class Main extends Application {
 
-    private GamePanel panel;
+    private WorldCreator panel;
     private Thread gameLoop;
 
 
@@ -16,7 +18,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 
 
-        panel = new GamePanel();
+        panel = new WorldCreator();
 
         primaryStage.setTitle("Box2D - TEST");
         primaryStage.setScene(panel.getScene());
@@ -40,7 +42,28 @@ public class Main extends Application {
                     frameCount++;
                     timeFromLastUpdate = currentNanoTime;
                     panel.update();
-                    panel.draw("FPS: " + fps);
+
+                    Runtime runtime = Runtime.getRuntime();
+                    NumberFormat format = NumberFormat.getNumberInstance();
+                    double allocatedMemory = runtime.totalMemory() - runtime.freeMemory();
+                    double totalMem = runtime.totalMemory();
+                    double freeMem = runtime.freeMemory();
+
+                    allocatedMemory /= 1024 * 1024;
+                    totalMem /= 1024 * 1024;
+                    freeMem /= 1024 * 1024;
+
+                    format.setMinimumFractionDigits(2);
+                    format.setMaximumFractionDigits(2);
+                    format.setMaximumIntegerDigits(4);
+                    format.setMinimumIntegerDigits(3);
+                    format.format(allocatedMemory);
+
+                    String totalMemory =        "Total memory:        " + format.format(totalMem) +" MB";
+                    String freeMemory =         "Freememory:          " + format.format(freeMem) +" MB";
+                    String statisticString =    "Allocated memory: " + format.format(allocatedMemory) +" MB"
+                            + "\n" + totalMemory + "\n" + freeMemory;
+                    panel.draw("FPS: " + fps,statisticString);
                 }
                 if (currentNanoTime - frameUpdateTime > 1000_000_000){
                     fps =frameCount;
@@ -50,6 +73,10 @@ public class Main extends Application {
 
             }
         }.start();
+    }
+
+    private void printMemoryUsing(){
+
     }
 
     public static void main(String[] args) {

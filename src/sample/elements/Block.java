@@ -5,12 +5,7 @@ import javafx.scene.paint.Color;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
-import sample.GamePanel;
-import sample.Main;
-
-import java.awt.*;
-
-import static sample.GamePanel.*;
+import sample.WorldCreator;
 
 /**
  * Created by bogusz on 10.03.18.
@@ -18,8 +13,8 @@ import static sample.GamePanel.*;
 public class Block extends ElementBase {
 
     //Dimisions:
-    private static float width = 40f;
-    private static float height = 40f;
+    protected static float width = 40f;
+    protected static float height = 40f;
 
     //Graphics parameters
     private static Color color = Color.RED;
@@ -46,21 +41,21 @@ public class Block extends ElementBase {
     protected  void physicCreate(){
         bodyDef = new BodyDef();
         bodyDef.type = BodyType.DYNAMIC;
-        bodyDef.position.set((xPosition + width/2) / GamePanel.SCALE_TO_JAVAFX,
-                            (yPosition + height/2) / GamePanel.SCALE_TO_JAVAFX);
+        bodyDef.position.set((xPosition + width/2) / WorldCreator.SCALE_TO_JAVAFX,
+                            (yPosition + height/2) / WorldCreator.SCALE_TO_JAVAFX);
 
         body = world.createBody(bodyDef);
 
         shape = new PolygonShape();
 
-        Vec2 B1 = new Vec2( ((float)-width / 2)/ GamePanel.SCALE_TO_JAVAFX,
-                -height/2/ GamePanel.SCALE_TO_JAVAFX);
-        Vec2 B2 = new Vec2((width/2)/ GamePanel.SCALE_TO_JAVAFX,
-                -height/2/ GamePanel.SCALE_TO_JAVAFX);
-        Vec2 B3 = new Vec2((width/2)/ GamePanel.SCALE_TO_JAVAFX,
-                height/2/ GamePanel.SCALE_TO_JAVAFX);
-        Vec2 B4 = new Vec2((-width/2)/ GamePanel.SCALE_TO_JAVAFX,
-                (height/2)/ GamePanel.SCALE_TO_JAVAFX);
+        Vec2 B1 = new Vec2( ((float)-width / 2)/ WorldCreator.SCALE_TO_JAVAFX,
+                -height/2/ WorldCreator.SCALE_TO_JAVAFX);
+        Vec2 B2 = new Vec2((width/2)/ WorldCreator.SCALE_TO_JAVAFX,
+                -height/2/ WorldCreator.SCALE_TO_JAVAFX);
+        Vec2 B3 = new Vec2((width/2)/ WorldCreator.SCALE_TO_JAVAFX,
+                height/2/ WorldCreator.SCALE_TO_JAVAFX);
+        Vec2 B4 = new Vec2((-width/2)/ WorldCreator.SCALE_TO_JAVAFX,
+                (height/2)/ WorldCreator.SCALE_TO_JAVAFX);
 
         Vec2[] vec2 ={B1,B2,B3,B4};
 
@@ -95,8 +90,8 @@ public class Block extends ElementBase {
     }
 
     public void writePostionConvertedFromWorld(){
-        double x = body.getPosition().x * GamePanel.SCALE_TO_JAVAFX;
-        double y = body.getPosition().y * GamePanel.SCALE_TO_JAVAFX;
+        double x = body.getPosition().x * WorldCreator.SCALE_TO_JAVAFX;
+        double y = body.getPosition().y * WorldCreator.SCALE_TO_JAVAFX;
         System.out.println("Pozycja w świeci x= " + y + " y= " + y );
     }
 
